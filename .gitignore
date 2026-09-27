@@ -1,0 +1,19 @@
+gitignore
+# Python 编译缓存
+__pycache__/
+*.py[cod]
+
+# 虚拟环境
+.venv/
+venv/
+env/
+
+# PyCharm 配置
+.idea/
+
+# 环境变量文件（后面存密码用）
+.env
+
+# 误创建的 npm 文件
+node_modules/
+package-lock.json

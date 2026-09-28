@@ -1,8 +1,7 @@
 
-
-from  sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import  AsyncSession
-from sqlalchemy.sql.functions import count, func
+from sqlalchemy.sql.functions import func
 
 from models.news_model import Category, News
 #封装查询方法
@@ -20,3 +19,30 @@ async def get_news_total(db: AsyncSession,category_id:int):
     stmt = select(func.count(News.id)).where(News.category_id==category_id)
     result = await db.execute(stmt)
     return result.scalar()
+
+async def get_news_detail(db: AsyncSession,news_id:int):
+    stmt = select(News).where(News.id==news_id)
+    result = await db.execute(stmt)
+    return result.scalar_one_or_none()
+
+async def get_news_views(db: AsyncSession,news_id:int):
+    stmt = update(News).where(News.id==news_id).values(views=News.views+1)
+    await db.execute(stmt)
+    await db.commit()
+async def news_crud_related(db: AsyncSession,news_id:int,category_id:int,limit:int=5):
+    stmt = select(News).where(News.category_id==category_id,News.id!=news_id).order_by(
+        News.views.desc(),News.publish_time.desc()).limit(limit)
+    result = await db.execute(stmt)
+    related_news= result.scalars().all()
+#列表推导式,推导新闻核心数据
+    return[{
+        "id": news_detail.id,
+        "title": news_detail.title,
+        "content": news_detail.content,
+        "image": news_detail.image,
+        "author": news_detail.author,
+        "publishTime": news_detail.publish_time,
+        "categoryId": news_detail.category_id,
+        "views": news_detail.views,
+
+    }for news_detail in related_news]

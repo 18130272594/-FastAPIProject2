@@ -1,8 +1,5 @@
-
-
 from fastapi import APIRouter, Depends, Query,HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
-
 from CRUD import  news_crud
 from config.ormbase import get_database
 

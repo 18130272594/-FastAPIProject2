@@ -44,4 +44,4 @@ class News(Base):
     publish_time: Mapped[datetime] = mapped_column(DateTime, default=datetime.now, comment="发布时间")
 
     def __repr__(self):
-     return f"<Category (id={self.id},name={self.name}),sort_order={self.sort_order}>"
+        return f"<News(id={self.id}, title='{self.title}', category_id={self.category_id})>"
